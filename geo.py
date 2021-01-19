@@ -4,7 +4,7 @@ EARTH_RADIUS = 6371009.0
 PI = math.pi
 
 
-def contains_location(point, polygon, geodesic):
+def contains_location(point: dict, polygon: list[tuple(float, float)], geodesic: bool) -> bool:
     """
       Computes whether the given point lies inside the specified polygon.
       The polygon is always considered closed, regardless of whether the last point equals
@@ -38,7 +38,7 @@ def contains_location(point, polygon, geodesic):
     return (n_intersect & 1) != 0
 
 
-def is_location_on_edge(point, polygon, geodesic, tolerance):
+def is_location_on_edge(point: dict, polygon: list[tuple(float, float)], geodesic: bool, tolerance: int) -> bool:
     """
       Computes whether the given point lies on or near the edge of a polygon, within a specified tolerance in meters.
       The polygon edge is composed of great circle segments if geodesic is true, and of Rhumb segments otherwise.
@@ -50,12 +50,12 @@ def is_location_on_edge(point, polygon, geodesic, tolerance):
     return __is_location_on_edge_or_path(point, polygon, True, geodesic, tolerance)
 
 
-def __is_location_on_edge_or_path(point, polygon, closed, geodesic, tolerance_earth):
+def __is_location_on_edge_or_path(point: dict, polygon: list[tuple(float, float)], closed: bool, geodesic: bool, tolerance_earth: int) -> bool:
     idx = __location_index_on_edge_or_path(point, polygon, closed, geodesic, tolerance_earth)
     return idx >= 0
 
 
-def __location_index_on_edge_or_path(point, poly, closed, geodesic, tolerance_earth):
+def __location_index_on_edge_or_path(point: dict, poly: list[tuple(float, float)], closed: bool, geodesic: bool, tolerance_earth: int) -> int:
     size = len(poly)
     if size == 0:
         return -1

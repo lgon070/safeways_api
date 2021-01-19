@@ -17,7 +17,7 @@ PI = math.pi
 """
 
 
-def decode(point_str):
+def decode(point_str: str) -> list[tuple(float, float)]:
     """
         The following method although present in Google's android-map-utils PolyUtil class,
         this method was ported from tuvtran's PopMap placerequest.py
@@ -161,7 +161,7 @@ def sin_from_hav(h):
 """
 
 
-def find_distance(latlng1, latlng2):
+def find_distance(latlng1: tuple(float, float), latlng2: tuple(float, float)) -> float:
     """
         Computes the distance between two tuples of
         latitude and longitudes in meters
@@ -182,7 +182,7 @@ def find_distance(latlng1, latlng2):
     return haversine_d
 
 
-def get_accidents(lat, lng, radius, accidents):
+def get_accidents(lat: float, lng: float, radius: float, accidents: list[dict]) -> list[dict]:
     near_accidents = []
     for accident in accidents:
         if find_distance((lat, lng), (accident['lat'], accident['lng'])) <= radius:
@@ -194,7 +194,7 @@ def get_accidents(lat, lng, radius, accidents):
     return near_accidents
 
 
-def find_directions(origin, destination, method):
+def find_directions(origin: tuple(float, float), destination: tuple(float, float), method: str) -> list:
     parameters = {
         "origin": f'{origin[0]},{origin[1]}',
         "destination": f'{destination[0]},{destination[1]}',
@@ -210,5 +210,5 @@ def find_directions(origin, destination, method):
     json_data = response.json()
     status = str(json_data["status"])
     if status == "ZERO_RESULTS":
-        return "No Path Found"
+        return ["No Path Found"]
     return json_data["routes"]
