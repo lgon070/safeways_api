@@ -77,7 +77,7 @@ def read_csv() -> List[dict]:
                     # Notes: Y denotes yes, empty denotes no
                     # print(f'Bicycle Accident: {row[59]}')
                     try:
-                        bicycle_accident = 3 if row[59].upper() == 'Y' or row[58].upper() == 'YES' else 0
+                        bicycle_accident = 3 if row[59].upper() == 'Y' or row[59].upper() == 'YES' else 0
                         total_weight += bicycle_accident
                     except Exception as e:
                         print(e)
@@ -117,7 +117,7 @@ def read_csv() -> List[dict]:
                     # Notes:
                     # print(f'Count Severe Inj: {row[66]}')
                     try:
-                        count_severe_inj = 0.0 if row[66] == '0' or row[66] == '' else float(row[39]) * 5
+                        count_severe_inj = 0.0 if row[66] == '0' or row[66] == '' else float(row[66]) * 5
                         total_weight += count_severe_inj
                     except Exception as e:
                         print(e)
