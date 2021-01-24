@@ -1,8 +1,11 @@
 from geo import *
 from util import *
+from typing import *
+
+LatLng = Tuple[float, float]
 
 
-def best_path_contains(origin: tuple(float, float), destination: tuple(float, float), method: str, accidents: list) -> dict:
+def best_path_contains(origin: LatLng, destination: LatLng, method: str, accidents: List[dict]) -> dict:
     weighted_routes = []
     routes = find_directions(origin, destination, method)
     if routes[0] == "No Path Found":
@@ -20,9 +23,10 @@ def best_path_contains(origin: tuple(float, float), destination: tuple(float, fl
         polyline = decoded_poly
         for accident in near_accidents:
             if contains_location(accident, polyline, True):
-                weight += accident['severity']
+                weight += accident['total_weight']
 
-        weighted_routes.append({'route': decoded_poly, 'points': route["overview_polyline"]["points"], 'weight': weight})
+        weighted_routes.append(
+            {'route': decoded_poly, 'points': route["overview_polyline"]["points"], 'weight': weight})
 
     least_weighted_route = weighted_routes[0]
     max_weight = weighted_routes[0]['weight']
@@ -39,7 +43,7 @@ def best_path_contains(origin: tuple(float, float), destination: tuple(float, fl
     return least_weighted_route
 
 
-def best_path_edge(origin: tuple(float, float), destination: tuple(float, float), method: str, accidents: list) -> dict:
+def best_path_edge(origin: LatLng, destination: LatLng, method: str, accidents: List[dict]) -> dict:
     weighted_routes = []
     routes = find_directions(origin, destination, method)
     if routes[0] == "No Path Found":
@@ -57,11 +61,10 @@ def best_path_edge(origin: tuple(float, float), destination: tuple(float, float)
         polyline = decoded_poly
         for accident in near_accidents:
             if is_location_on_edge(accident, polyline, True, 25):
-                weight += accident['severity']
+                weight += accident['total_weight']
 
-        weighted_routes.append({'route': decoded_poly, 'points': route["overview_polyline"]["points"], 'weight': weight})
-
-    print(weighted_routes)
+        weighted_routes.append(
+            {'route': decoded_poly, 'points': route["overview_polyline"]["points"], 'weight': weight})
 
     least_weighted_route = weighted_routes[0]
     max_weight = weighted_routes[0]['weight']
