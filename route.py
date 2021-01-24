@@ -8,8 +8,8 @@ LatLng = Tuple[float, float]
 def best_path_contains(origin: LatLng, destination: LatLng, method: str, accidents: List[dict]) -> dict:
     weighted_routes = []
     routes = find_directions(origin, destination, method)
-    if routes[0] == "No Path Found":
-        print('No Routes Found')
+    if routes[0] == 'error':
+        print(routes[1])
         return {'route': 'No Routes Found', 'points': [], 'weight': 0}
     for route in routes:
         weight = 0
@@ -46,8 +46,8 @@ def best_path_contains(origin: LatLng, destination: LatLng, method: str, acciden
 def best_path_edge(origin: LatLng, destination: LatLng, method: str, accidents: List[dict]) -> dict:
     weighted_routes = []
     routes = find_directions(origin, destination, method)
-    if routes[0] == "No Path Found":
-        print('No Routes Found')
+    if routes[0] == 'error':
+        print(routes[1])
         return {'route': 'No Routes Found', 'points': [], 'weight': 0}
     for route in routes:
         weight = 0

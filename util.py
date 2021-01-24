@@ -198,6 +198,7 @@ def get_accidents(lat: float, lng: float, radius: float, accidents: List[dict]) 
 
 
 def find_directions(origin: LatLng, destination: LatLng, method: str) -> list:
+    # https://maps.googleapis.com/maps/api/directions/json?origin=34.053989,-118.243217&destination=34.059521,-118.274872&method=walking&alternatives=true&key=AUTH_KEY
     parameters = {
         "origin": f'{origin[0]},{origin[1]}',
         "destination": f'{destination[0]},{destination[1]}',
@@ -212,6 +213,8 @@ def find_directions(origin: LatLng, destination: LatLng, method: str) -> list:
 
     json_data = response.json()
     status = str(json_data["status"])
-    if status == "ZERO_RESULTS":
-        return ["No Path Found"]
+    if status == 'ZERO_RESULTS':
+        return ['error', 'No Paths Found']
+    elif status == 'REQUEST_DENIED':
+        return ['error', 'Invalid API Key']
     return json_data["routes"]

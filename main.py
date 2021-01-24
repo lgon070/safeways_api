@@ -212,8 +212,8 @@ def read_csv() -> List[dict]:
 
 
 def search(origin, destination, method, accidents):
-    waypoints = best_path_edge(origin, destination, method, accidents)
-    # waypoints = best_path_contains(origin, destination, method, accidents)
+    # waypoints = best_path_edge(origin, destination, method, accidents)
+    waypoints = best_path_contains(origin, destination, method, accidents)
     if len(waypoints) == 0:
         print(f'No Suitable Path Found')
     else:
