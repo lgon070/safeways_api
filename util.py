@@ -1,8 +1,10 @@
 import math
 import requests
 from typing import *
+from global_data import GlobalData
 
-AUTH_KEY = 'GOOGLE API KEY HERE'
+gd = GlobalData()
+AUTH_KEY = gd.google_key()
 PI = math.pi
 LatLng = Tuple[float, float]
 Polygon = List[LatLng]

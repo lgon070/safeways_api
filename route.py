@@ -26,7 +26,7 @@ def best_path_contains(origin: LatLng, destination: LatLng, method: str, acciden
                 weight += accident['total_weight']
 
         weighted_routes.append(
-            {'route': decoded_poly, 'points': route["overview_polyline"]["points"], 'weight': weight})
+            {'route': decoded_poly, 'points': route["overview_polyline"]["points"], 'weight': weight, 'algorithm': 'contains_location'})
 
     least_weighted_route = weighted_routes[0]
     max_weight = weighted_routes[0]['weight']
@@ -43,7 +43,7 @@ def best_path_contains(origin: LatLng, destination: LatLng, method: str, acciden
     return least_weighted_route
 
 
-def best_path_edge(origin: LatLng, destination: LatLng, method: str, accidents: List[dict]) -> dict:
+def best_path_edge(origin: LatLng, destination: LatLng, method: str, accidents: List[dict], tolerance) -> dict:
     weighted_routes = []
     routes = find_directions(origin, destination, method)
     if routes[0] == 'error':
@@ -60,11 +60,11 @@ def best_path_edge(origin: LatLng, destination: LatLng, method: str, accidents: 
 
         polyline = decoded_poly
         for accident in near_accidents:
-            if is_location_on_edge(accident, polyline, True, 25):
+            if is_location_on_edge(accident, polyline, True, tolerance):
                 weight += accident['total_weight']
 
         weighted_routes.append(
-            {'route': decoded_poly, 'points': route["overview_polyline"]["points"], 'weight': weight})
+            {'route': decoded_poly, 'points': route["overview_polyline"]["points"], 'weight': weight, 'algorithm': 'location_edge', 'tolerance': tolerance})
 
     least_weighted_route = weighted_routes[0]
     max_weight = weighted_routes[0]['weight']
