@@ -1,7 +1,8 @@
 # SafeWays Backend API
 
-Safepath finder using City of Los Angeles Collision data
+SafeWays Safepath API
 
-Finds a path from point A to point B using Google's directions API 
+Beta API that finds the safest path for pedestrians and bicyclists, made for City of Los Angeles residents using LA
+City Collision Data, Google's Directions API, and Google's LocationOnEdge and/or ContainsLocation algorithm
 
-Finds the safest path by comparing collision data to the edges of a polyline. 
+
