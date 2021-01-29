@@ -1,10 +1,8 @@
 import math
 import requests
 from typing import *
-from global_data import GlobalData
 
-gd = GlobalData()
-AUTH_KEY = gd.google_key()
+AUTH_KEY = 'GOOGLE API HERE'
 PI = math.pi
 LatLng = Tuple[float, float]
 Polygon = List[LatLng]
@@ -200,11 +198,11 @@ def get_accidents(lat: float, lng: float, radius: float, accidents: List[dict]) 
 
 
 def find_directions(origin: LatLng, destination: LatLng, method: str) -> list:
-    # https://maps.googleapis.com/maps/api/directions/json?origin=34.053989,-118.243217&destination=34.059521,-118.274872&method=walking&alternatives=true&key=AUTH_KEY
+    # https://maps.googleapis.com/maps/api/directions/json?origin=34.053989,-118.243217&destination=34.059521,-118.274872&mode=walking&alternatives=true&key=AIzaSyDrGUoICmyI28kv6leNximWqI_HqZRMeEU
     parameters = {
         "origin": f'{origin[0]},{origin[1]}',
         "destination": f'{destination[0]},{destination[1]}',
-        "method": method,
+        "mode": method,
         "alternatives": "true",
         "key": AUTH_KEY
     }

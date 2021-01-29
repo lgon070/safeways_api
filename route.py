@@ -13,8 +13,13 @@ def best_path_contains(origin: LatLng, destination: LatLng, method: str, acciden
         return {'route': 'No Routes Found', 'points': [], 'weight': 0}
     for route in routes:
         weight = 0
+
+        # Extracting necessary details of route object
+        encoded_polyline = route['overview_polyline']['points'] # encoded polyline of route
         distance = route["legs"][0]["distance"]["value"]  # distance is calculated in meters
-        decoded_poly = decode(route["overview_polyline"]["points"])
+        steps = route['legs'][0]['steps'] # all steps needed to reach destination
+        warnings = route['warnings']
+        decoded_poly = decode(encoded_polyline)
         mid_point = decoded_poly[int(len(decoded_poly) / 2)]
         radius = distance * (3 / 2)  # radius is the radius of the circle that encompasses the polyline in meters
 
@@ -26,7 +31,7 @@ def best_path_contains(origin: LatLng, destination: LatLng, method: str, acciden
                 weight += accident['total_weight']
 
         weighted_routes.append(
-            {'route': decoded_poly, 'points': route["overview_polyline"]["points"], 'weight': weight, 'algorithm': 'contains_location'})
+            {'route': decoded_poly, 'points': encoded_polyline, 'steps': steps, 'warnings': warnings, 'weight': weight, 'algorithm': 'contains_location'})
 
     least_weighted_route = weighted_routes[0]
     max_weight = weighted_routes[0]['weight']
@@ -51,8 +56,13 @@ def best_path_edge(origin: LatLng, destination: LatLng, method: str, accidents: 
         return {'route': 'No Routes Found', 'points': [], 'weight': 0}
     for route in routes:
         weight = 0
+
+        # Extracting necessary details of route object
+        encoded_polyline = route['overview_polyline']['points']  # encoded polyline of route
         distance = route["legs"][0]["distance"]["value"]  # distance is calculated in meters
-        decoded_poly = decode(route["overview_polyline"]["points"])
+        steps = route['legs'][0]['steps']  # all steps needed to reach destination
+        warnings = route['warnings']
+        decoded_poly = decode(encoded_polyline)
         mid_point = decoded_poly[int(len(decoded_poly) / 2)]
         radius = distance * (3 / 2)  # radius is the radius of the circle that encompasses the polyline in meters
 
@@ -64,7 +74,7 @@ def best_path_edge(origin: LatLng, destination: LatLng, method: str, accidents: 
                 weight += accident['total_weight']
 
         weighted_routes.append(
-            {'route': decoded_poly, 'points': route["overview_polyline"]["points"], 'weight': weight, 'algorithm': 'location_edge', 'tolerance': tolerance})
+            {'route': decoded_poly, 'points': encoded_polyline, 'steps': steps, 'warnings': warnings, 'weight': weight, 'algorithm': 'location_edge', 'tolerance': tolerance})
 
     least_weighted_route = weighted_routes[0]
     max_weight = weighted_routes[0]['weight']
