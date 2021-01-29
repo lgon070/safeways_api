@@ -1,20 +1,20 @@
 import math
 import requests
-from typing import *
+from typing import Tuple, List
 
-AUTH_KEY = 'GOOGLE API KEY HERE'
+AUTH_KEY = 'API KEY HERE'
 PI = math.pi
 LatLng = Tuple[float, float]
 Polygon = List[LatLng]
 
 """
     Various mathematical formulas for use in Google's isLocationOnEdge and containsLocation algorithms.
-    
+
     Unless otherwise specified all math utilities have been ported from:
-    
+
     Google's android-map-utils PolyUtil class:
     https://github.com/googlemaps/android-maps-utils/blob/master/library/src/main/java/com/google/maps/android/PolyUtil.java  
-    
+
     Google's android-map-utils MathUtil class:
     https://github.com/googlemaps/android-maps-utils/blob/master/library/src/main/java/com/google/maps/android/MathUtil.java
 """

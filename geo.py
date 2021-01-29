@@ -1,5 +1,6 @@
-from util import *
-from typing import *
+from util import to_radians, mercator, intersects, wrap, hav_from_sin, hav, inverse_mercator, clamp, sin_delta_bearing, sin_from_hav, sin_sum_from_hav, hav_distance
+from typing import Tuple, List
+import math
 
 EARTH_RADIUS = 6371009.0
 PI = math.pi
@@ -53,14 +54,12 @@ def is_location_on_edge(point: dict, polygon: Polygon, geodesic: bool, tolerance
     return __is_location_on_edge_or_path(point, polygon, True, geodesic, tolerance)
 
 
-def __is_location_on_edge_or_path(point: dict, polygon: Polygon, closed: bool, geodesic: bool,
-                                  tolerance_earth: int) -> bool:
+def __is_location_on_edge_or_path(point: dict, polygon: Polygon, closed: bool, geodesic: bool, tolerance_earth: int) -> bool:
     idx = __location_index_on_edge_or_path(point, polygon, closed, geodesic, tolerance_earth)
     return idx >= 0
 
 
-def __location_index_on_edge_or_path(point: dict, poly: Polygon, closed: bool, geodesic: bool,
-                                     tolerance_earth: int) -> int:
+def __location_index_on_edge_or_path(point: dict, poly: Polygon, closed: bool, geodesic: bool, tolerance_earth: int) -> int:
     size = len(poly)
     if size == 0:
         return -1

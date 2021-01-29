@@ -1,6 +1,7 @@
-from geo import *
-from util import *
-from typing import *
+from util import find_directions, decode, get_accidents
+from geo import contains_location, is_location_on_edge
+from typing import Tuple, List
+
 
 LatLng = Tuple[float, float]
 

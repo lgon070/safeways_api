@@ -1,6 +1,6 @@
 from flask import request, render_template, Flask, Response
-from route import *
 from persistant_list import PersistentList
+from route import best_path_contains, best_path_edge
 
 app = Flask(__name__)
 total_accidents = PersistentList()
@@ -23,8 +23,7 @@ def safepath():
     tolerance = int(tolerance_param) if tolerance_param is not None else 0
 
     if use_edge:
-        safest_path_edge = best_path_edge(origin, destination, method, total_accidents.get_list(),
-                                          tolerance if 5 <= tolerance <= 150 else 20)
+        safest_path_edge = best_path_edge(origin, destination, method, total_accidents.get_list(), tolerance if 5 <= tolerance <= 150 else 20)
         return safest_path_edge
     else:
         safest_path_contains = best_path_contains(origin, destination, method, total_accidents.get_list())
@@ -34,7 +33,7 @@ def safepath():
 @app.route('/refresh', methods=['GET'])
 def get():
     key = request.args.get('key')
-    if key == 'AUTO GENERATED KEY':
+    if key == 'CUSTOM GENERATED KEY HERE':
         total_accidents.update()
         return {'refreshed': True, 'len': total_accidents.size()}
     else:
