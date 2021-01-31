@@ -3,8 +3,10 @@ from persistant_list import PersistentList
 from route import best_path_contains, best_path_edge
 
 app = Flask(__name__)
+
 total_accidents = PersistentList()
 total_accidents.update()
+# total_accidents.test_update()
 
 
 @app.route('/safepath', methods=['GET'])
@@ -22,6 +24,7 @@ def safepath():
     use_edge = True if use_edge_param is None else False if use_edge_param == '0' else True
     tolerance = int(tolerance_param) if tolerance_param is not None else 0
 
+    # https://polar-hollows-98491.herokuapp.com/safepath?origin=34.053715,-118.242653&destination=34.059238,-118.279068&method=walking
     if use_edge:
         safest_path_edge = best_path_edge(origin, destination, method, total_accidents.get_list(), tolerance if 5 <= tolerance <= 150 else 20)
         return safest_path_edge
@@ -33,8 +36,9 @@ def safepath():
 @app.route('/refresh', methods=['GET'])
 def get():
     key = request.args.get('key')
-    if key == 'CUSTOM GENERATED KEY HERE':
+    if key == '1234':
         total_accidents.update()
+        # total_accidents.test_update()
         return {'refreshed': True, 'len': total_accidents.size()}
     else:
         return {'refreshed': False, 'error': 'Invalid Key'}
