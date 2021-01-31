@@ -237,6 +237,9 @@ class PersistentList:
         except Exception as e:
             print(f'Other error occurred: {e}\nPrevented List refresh')
 
+    def test_update(self):
+        return []
+
     def append(self, to_append):
         self.list.append(to_append)
 
