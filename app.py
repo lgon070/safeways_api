@@ -6,6 +6,7 @@ app = Flask(__name__)
 
 total_accidents = PersistentList()
 total_accidents.update()
+print(f'Accidents in Dataset: {total_accidents.size()}')
 # total_accidents.test_update()
 
 
@@ -25,6 +26,7 @@ def safepath():
     tolerance = int(tolerance_param) if tolerance_param is not None else 0
 
     # https://polar-hollows-98491.herokuapp.com/safepath?origin=34.053715,-118.242653&destination=34.059238,-118.279068&method=walking
+    # http://127.0.0.1:5000/safepath?origin=34.053715,-118.242653&destination=34.059238,-118.279068&method=walking
     if use_edge:
         safest_path_edge = best_path_edge(origin, destination, method, total_accidents.get_list(), tolerance if 5 <= tolerance <= 150 else 20)
         return safest_path_edge
@@ -36,7 +38,7 @@ def safepath():
 @app.route('/refresh', methods=['GET'])
 def get():
     key = request.args.get('key')
-    if key == '1234':
+    if key == 'GENERATED KEY':
         total_accidents.update()
         # total_accidents.test_update()
         return {'refreshed': True, 'len': total_accidents.size()}
