@@ -1,6 +1,6 @@
 import math
 import requests
-from typing import Tuple, List
+from typing import Tuple, List, Dict, Any
 
 AUTH_KEY = 'API KEY'
 PI = math.pi
@@ -197,7 +197,7 @@ def get_accidents(lat: float, lng: float, radius: float, accidents: List[dict]) 
     return near_accidents
 
 
-def find_directions(origin: LatLng, destination: LatLng, method: str) -> list:
+def find_directions(origin: LatLng, destination: LatLng, method: str) -> dict:
     parameters = {
         "origin": f'{origin[0]},{origin[1]}',
         "destination": f'{destination[0]},{destination[1]}',
@@ -206,14 +206,22 @@ def find_directions(origin: LatLng, destination: LatLng, method: str) -> list:
         "key": AUTH_KEY
     }
 
-    print(parameters)
+    print(f'Google Directions API Given Parameters: {parameters}')
+
     response = requests.get(
         "https://maps.googleapis.com/maps/api/directions/json?", params=parameters)
-
     json_data = response.json()
-    status = str(json_data["status"])
-    if status == 'ZERO_RESULTS':
-        return ['error', 'No Paths Found']
+    status = json_data["status"]
+    if status == 'OK':
+        return {'status': 'OK', 'routes': json_data['routes']}
+    elif status == 'ZERO_RESULTS':
+        return {'status': 'ZERO_RESULTS',
+                'user_error_msg': 'SafeWays API Found No SafePaths for the Origin-Destination Combination',
+                'log_error_google': 'Google Directions API found zero results'}
     elif status == 'REQUEST_DENIED':
-        return ['error', 'Invalid API Key']
-    return json_data["routes"]
+        return {'status': 'REQUEST_DENIED',
+                'user_error_msg': 'SafeWays API Encountered an Internal Key Validation Error',
+                'log_error_google': json_data["error_message"]}
+    else:
+        return {'status': 'SERVER_SIDE_ERROR', 'user_error_msg': 'SafeWays API Encountered a Internal Server Error',
+                'log_error_google': json_data["error_message"]}
