@@ -9,7 +9,7 @@ class PersistentList:
 
     def update(self):
         try:
-            response = requests.get('https://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/rsg20132018_gdb/FeatureServer/0/query?where=1%3D1&outFields=collision_severity,number_killed,hit_and_run,pedestrian_accident,motorcycle_accident,truck_accident,alcohol_involved,count_severe_inj,count_visible_inj,count_complaint_pain,count_ped_killed,count_ped_injured,count_bicyclist_killed,count_bicyclist_injured,count_mc_killed,latitude,longitude,point_x,point_y,count_mc_injured,bicycle_accident,number_injured&returnGeometry=false&outSR=4326&f=json')
+            response = requests.get('https://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/rsg20132018_gdb/FeatureServer/0/query?where=1%3D1&outFields=int_id,collision_severity,number_killed,hit_and_run,pedestrian_accident,motorcycle_accident,truck_accident,alcohol_involved,count_severe_inj,count_visible_inj,count_complaint_pain,count_ped_killed,count_ped_injured,count_bicyclist_killed,count_bicyclist_injured,count_mc_killed,latitude,longitude,point_x,point_y,count_mc_injured,bicycle_accident,number_injured&returnGeometry=false&outSR=4326&f=json')
             # response = requests.get('https://opendata.arcgis.com/datasets/66d96f15d4e14e039caa6134e6eab8e5_0.geojson')
             response.raise_for_status()
             json_data = response.json()
@@ -20,6 +20,7 @@ class PersistentList:
                 total_weight = 0
                 latitude = 0
                 longitude = 0
+                int_id = accident['int_id']
 
                 try:
                     latitude = float(accident['point_y'])
@@ -228,6 +229,7 @@ class PersistentList:
                         print(e)
 
                     self.append({
+                        'id' : int_id,
                         'lat': latitude,
                         'lng': longitude,
                         'total_weight': total_weight

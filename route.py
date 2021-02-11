@@ -7,6 +7,7 @@ LatLng = Tuple[float, float]
 
 def best_path_contains(origin: LatLng, destination: LatLng, method: str, accidents: List[dict]) -> dict:
     weighted_routes = []
+    accident_ids = []
     fd_response = find_directions(origin, destination, method)
     if fd_response['status'] == 'OK':
         for route in fd_response['routes']:
@@ -26,10 +27,11 @@ def best_path_contains(origin: LatLng, destination: LatLng, method: str, acciden
             for accident in near_accidents:
                 if contains_location(accident, polyline, True):
                     weight += accident['total_weight']
+                    accident_ids.append(accident['id'])
 
             weighted_routes.append(
                 {'route': decoded_poly, 'points': encoded_polyline, 'steps': steps, 'warnings': warnings,
-                 'weight': weight})
+                 'weight': weight, 'accident_ids': accident_ids})
 
         # bubble sort weighted routes
         n = len(weighted_routes)
@@ -46,6 +48,7 @@ def best_path_contains(origin: LatLng, destination: LatLng, method: str, acciden
 
 def best_path_edge(origin: LatLng, destination: LatLng, method: str, accidents: List[dict], tolerance) -> dict:
     weighted_routes = []
+    accident_ids = []
     fd_response = find_directions(origin, destination, method)
     if fd_response['status'] == 'OK':
         for route in fd_response['routes']:
@@ -65,10 +68,11 @@ def best_path_edge(origin: LatLng, destination: LatLng, method: str, accidents: 
             for accident in near_accidents:
                 if is_location_on_edge(accident, polyline, True, tolerance):
                     weight += accident['total_weight']
+                    accident_ids.append(accident['id'])
 
             weighted_routes.append(
                 {'route': decoded_poly, 'points': encoded_polyline, 'steps': steps, 'warnings': warnings,
-                 'weight': weight})
+                 'weight': weight, 'accident_ids': accident_ids})
 
         # bubble sort weighted routes
         n = len(weighted_routes)
