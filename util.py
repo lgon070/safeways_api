@@ -1,6 +1,6 @@
 import math
 import requests
-from typing import Tuple, List, Dict, Any
+from typing import Tuple, List
 
 AUTH_KEY = 'GOOGLE API KEY'
 PI = math.pi
@@ -164,6 +164,12 @@ def sin_from_hav(h):
 """
 
 
+def within_bounds_center(origin: LatLng, destination: LatLng) -> bool:
+    center = (34.0522300, -118.2436800)
+    radius = 64374.00
+    return find_distance(center, origin) <= radius and find_distance(center, destination) <= radius
+
+
 def find_distance(latlng1: LatLng, latlng2: LatLng) -> float:
     """
         Computes the distance between two tuples of
@@ -190,10 +196,6 @@ def get_accidents(lat: float, lng: float, radius: float, accidents: List[dict]) 
     for accident in accidents:
         if find_distance((lat, lng), (accident['lat'], accident['lng'])) <= radius:
             near_accidents.append(accident)
-    print(f'--------------------------')
-    print(f'Point: {lat},{lng}')
-    print(f'Radius {radius}')
-    print(f'Near Accident count: {len(near_accidents)}')
     return near_accidents
 
 
@@ -205,8 +207,6 @@ def find_directions(origin: LatLng, destination: LatLng, method: str) -> dict:
         "alternatives": "true",
         "key": AUTH_KEY
     }
-
-    print(f'Google Directions API Given Parameters: {parameters}')
 
     response = requests.get(
         "https://maps.googleapis.com/maps/api/directions/json?", params=parameters)

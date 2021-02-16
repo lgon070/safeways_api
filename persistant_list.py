@@ -17,7 +17,7 @@ class PersistentList:
             for data in dataset:
                 accident = data['attributes']
                 # accident = data['properties']
-                total_weight = 0
+                accident_weight = 0
                 latitude = 0
                 longitude = 0
                 int_id = accident['int_id']
@@ -37,7 +37,7 @@ class PersistentList:
                     try:
                         collision_severity_val = accident['collision_severity']
                         collision_severity = 0 if collision_severity_val == '0' or collision_severity_val == '' or collision_severity_val is None else collision_severity_val
-                        total_weight += collision_severity
+                        accident_weight += collision_severity
                     except Exception as e:
                         print(e)
 
@@ -48,7 +48,7 @@ class PersistentList:
                     try:
                         number_killed_val = accident['number_killed']
                         number_killed = 0 if number_killed_val == '0' or number_killed_val == '' or number_killed_val is None else number_killed_val * 10
-                        total_weight += number_killed
+                        accident_weight += number_killed
                     except Exception as e:
                         print(e)
 
@@ -59,7 +59,7 @@ class PersistentList:
                     try:
                         number_injured_val = accident['number_injured']
                         number_injured = 0 if number_injured_val == '0' or number_injured_val == '' or number_injured_val is None else number_injured_val * 5
-                        total_weight += number_injured
+                        accident_weight += number_injured
                     except Exception as e:
                         print(e)
 
@@ -70,7 +70,7 @@ class PersistentList:
                     try:
                         hit_and_run_val = accident['hit_and_run']
                         hit_and_run = 0 if hit_and_run_val == 'N' else 3
-                        total_weight += hit_and_run
+                        accident_weight += hit_and_run
                     except Exception as e:
                         print(e)
 
@@ -81,7 +81,7 @@ class PersistentList:
                     try:
                         pedestrian_accident_val = accident['pedestrian_accident']
                         pedestrian_accident = 0 if pedestrian_accident_val == 'N' else 3
-                        total_weight += pedestrian_accident
+                        accident_weight += pedestrian_accident
                     except Exception as e:
                         print(e)
 
@@ -92,7 +92,7 @@ class PersistentList:
                     try:
                         bicycle_accident_val = accident['bicycle_accident']
                         bicycle_accident = 0 if bicycle_accident_val == 'N' else 3
-                        total_weight += bicycle_accident
+                        accident_weight += bicycle_accident
                     except Exception as e:
                         print(e)
 
@@ -103,7 +103,7 @@ class PersistentList:
                     try:
                         motorcycle_accident_val = accident['motorcycle_accident']
                         motorcycle_accident = 0 if motorcycle_accident_val == 'N' else 2
-                        total_weight += motorcycle_accident
+                        accident_weight += motorcycle_accident
                     except Exception as e:
                         print(e)
 
@@ -114,7 +114,7 @@ class PersistentList:
                     try:
                         truck_accident_val = accident['truck_accident']
                         truck_accident = 0 if truck_accident_val == 'N' else 4
-                        total_weight += truck_accident
+                        accident_weight += truck_accident
                     except Exception as e:
                         print(e)
 
@@ -125,7 +125,7 @@ class PersistentList:
                     try:
                         alcohol_involved_val = accident['alcohol_involved']
                         alcohol_involved = 0 if alcohol_involved_val == 'N' else 5
-                        total_weight += alcohol_involved
+                        accident_weight += alcohol_involved
                     except Exception as e:
                         print(e)
 
@@ -136,7 +136,7 @@ class PersistentList:
                     try:
                         count_severe_inj_val = accident['count_severe_inj']
                         count_severe_inj = 0 if count_severe_inj_val == '0' or count_severe_inj_val == '' or count_severe_inj_val is None else count_severe_inj_val * 5
-                        total_weight += count_severe_inj
+                        accident_weight += count_severe_inj
                     except Exception as e:
                         print(e)
 
@@ -147,7 +147,7 @@ class PersistentList:
                     try:
                         count_visible_inj_val = accident['count_visible_inj']
                         count_visible_inj = 0 if count_visible_inj_val == '0' or count_visible_inj_val == '' or count_visible_inj_val is None else count_visible_inj_val * 3
-                        total_weight += count_visible_inj
+                        accident_weight += count_visible_inj
                     except Exception as e:
                         print(e)
 
@@ -158,7 +158,7 @@ class PersistentList:
                     try:
                         count_complaint_pain_val = accident['count_complaint_pain']
                         count_complaint_pain = 0 if count_complaint_pain_val == '0' or count_complaint_pain_val == '' or count_complaint_pain_val else count_complaint_pain_val
-                        total_weight += count_complaint_pain
+                        accident_weight += count_complaint_pain
                     except Exception as e:
                         print(e)
 
@@ -169,7 +169,7 @@ class PersistentList:
                     try:
                         count_ped_killed_val = accident['count_ped_killed']
                         count_ped_killed = 0 if count_ped_killed_val == '0' or count_ped_killed_val == '' or count_ped_killed_val is None else count_ped_killed_val * 10
-                        total_weight += count_ped_killed
+                        accident_weight += count_ped_killed
                     except Exception as e:
                         print(e)
 
@@ -180,7 +180,7 @@ class PersistentList:
                     try:
                         count_ped_injured_val = accident['count_ped_injured']
                         count_ped_injured = 0 if count_ped_injured_val == '0' or count_ped_injured_val == '' or count_ped_injured_val is None else count_ped_injured_val * 5
-                        total_weight += count_ped_injured
+                        accident_weight += count_ped_injured
                     except Exception as e:
                         print(e)
 
@@ -191,7 +191,7 @@ class PersistentList:
                     try:
                         count_bicyclist_killed_val = accident['count_bicyclist_killed']
                         count_bicyclist_killed = 0 if count_bicyclist_killed_val == '0' or count_bicyclist_killed_val == '' or count_bicyclist_killed_val is None else count_bicyclist_killed_val * 10
-                        total_weight += count_bicyclist_killed
+                        accident_weight += count_bicyclist_killed
                     except Exception as e:
                         print(e)
 
@@ -202,7 +202,7 @@ class PersistentList:
                     try:
                         count_bicyclist_injured_val = accident['count_bicyclist_injured']
                         count_bicyclist_injured = 0 if count_bicyclist_injured_val == '0' or count_bicyclist_injured_val == '' or count_bicyclist_injured_val is None else count_bicyclist_injured_val * 5
-                        total_weight += count_bicyclist_injured
+                        accident_weight += count_bicyclist_injured
                     except Exception as e:
                         print(e)
 
@@ -213,7 +213,7 @@ class PersistentList:
                     try:
                         count_mc_killed_val = accident['count_mc_killed']
                         count_mc_killed = 0 if count_mc_killed_val == '0' or count_mc_killed_val == '' or count_mc_killed_val is None else count_mc_killed_val * 10
-                        total_weight += count_mc_killed
+                        accident_weight += count_mc_killed
                     except Exception as e:
                         print(e)
 
@@ -224,15 +224,15 @@ class PersistentList:
                     try:
                         count_mc_injured_val = accident['count_mc_injured']
                         count_mc_injured = 0 if count_mc_injured_val == '0' or count_mc_injured_val == '' or count_mc_injured_val is None else count_mc_injured_val * 5
-                        total_weight += count_mc_injured
+                        accident_weight += count_mc_injured
                     except Exception as e:
                         print(e)
 
                     self.append({
-                        'id' : int_id,
+                        'accident_id': int_id,
                         'lat': latitude,
                         'lng': longitude,
-                        'total_weight': total_weight
+                        'accident_weight': accident_weight
                     })
             print('Success! List refreshed with new dataset')
         except HTTPError as http_err:

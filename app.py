@@ -7,8 +7,6 @@ app = Flask(__name__)
 total_accidents = PersistentList()
 total_accidents.update()
 print(f'Accidents in Dataset: {total_accidents.size()}')
-
-
 # total_accidents.test_update()
 
 
@@ -19,8 +17,6 @@ def safepath():
     method = request.args.get('method')
     use_edge_param = request.args.get('use_edge')
     tolerance_param = request.args.get('tolerance')
-
-    print(f'API Given Parameters: {origin_param}, {destination_param}, {method}, {use_edge_param}, {tolerance_param}')
 
     try:
         origin = tuple(map(float, origin_param.split(',')))
