@@ -8,11 +8,11 @@ LatLng = Tuple[float, float]
 def best_path_contains(origin: LatLng, destination: LatLng, method: str, accidents: List[dict]) -> dict:
     within_bounds = within_bounds_center(origin, destination)
     weighted_routes = []
-    accidents_in_route = []
     fd_response = find_directions(origin, destination, method)
     if fd_response['status'] == 'OK':
         for route in fd_response['routes']:
             weight = 0
+            accidents_in_route = []
             # Extracting necessary details of route object
             encoded_polyline = route['overview_polyline']['points']  # encoded polyline of route
             distance = route["legs"][0]["distance"]["value"]  # distance is calculated in meters
@@ -28,12 +28,13 @@ def best_path_contains(origin: LatLng, destination: LatLng, method: str, acciden
             for accident in near_accidents:
                 if contains_location(accident, polyline, True):
                     weight += accident['accident_weight']
-                    accidents_in_route.append({'accident_id': accident['accident_id'], 'accident_weight': accident['accident_weight']})
+                    accidents_in_route.append(
+                        {'accident_id': accident['accident_id'], 'accident_weight': accident['accident_weight']})
 
             weighted_route = {'route': decoded_poly, 'points': encoded_polyline, 'steps': steps, 'warnings': warnings,
                               'weight': weight, 'accidents_in_route': accidents_in_route}
             if weight == 0:
-                if len(near_accidents) == 0:
+                if len(accidents_in_route) == 0:
                     weighted_route['accurate_zero_weight'] = False
                 else:
                     weighted_route['accurate_zero_weight'] = True
@@ -56,11 +57,11 @@ def best_path_contains(origin: LatLng, destination: LatLng, method: str, acciden
 def best_path_edge(origin: LatLng, destination: LatLng, method: str, accidents: List[dict], tolerance) -> dict:
     within_bounds = within_bounds_center(origin, destination)
     weighted_routes = []
-    accidents_in_route = []
     fd_response = find_directions(origin, destination, method)
     if fd_response['status'] == 'OK':
         for route in fd_response['routes']:
             weight = 0
+            accidents_in_route = []
             # Extracting necessary details of route object
             encoded_polyline = route['overview_polyline']['points']  # encoded polyline of route
             distance = route["legs"][0]["distance"]["value"]  # distance is calculated in meters
@@ -76,12 +77,13 @@ def best_path_edge(origin: LatLng, destination: LatLng, method: str, accidents: 
             for accident in near_accidents:
                 if is_location_on_edge(accident, polyline, True, tolerance):
                     weight += accident['accident_weight']
-                    accidents_in_route.append({'accident_id': accident['accident_id'], 'accident_weight': accident['accident_weight']})
+                    accidents_in_route.append(
+                        {'accident_id': accident['accident_id'], 'accident_weight': accident['accident_weight']})
 
             weighted_route = {'route': decoded_poly, 'points': encoded_polyline, 'steps': steps, 'warnings': warnings,
                               'weight': weight, 'accidents_in_route': accidents_in_route}
             if weight == 0:
-                if len(near_accidents) == 0:
+                if len(accidents_in_route) == 0:
                     weighted_route['accurate_zero_weight'] = False
                 else:
                     weighted_route['accurate_zero_weight'] = True

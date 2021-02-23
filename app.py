@@ -39,7 +39,7 @@ def safepath():
 @app.route('/refresh', methods=['GET'])
 def get():
     key = request.args.get('key')
-    if key == 'CUSTOM KEY':
+    if key == 'CUSTOM KEY HERE':
         total_accidents.update()
         return {'refreshed': True, 'len': total_accidents.size()}
     else:

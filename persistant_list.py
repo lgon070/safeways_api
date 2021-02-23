@@ -5,7 +5,6 @@ from requests.exceptions import HTTPError
 class PersistentList:
     def __init__(self):
         self.list = []
-        self.features = []
 
     def update(self):
         try:
@@ -234,7 +233,7 @@ class PersistentList:
                         'lng': longitude,
                         'accident_weight': accident_weight
                     })
-            print('Success! List refreshed with new dataset')
+            print(f'Success! List refreshed with new dataset entries: {self.size()}')
         except HTTPError as http_err:
             print(f'HTTP error occurred: {http_err}\nPrevented List refresh')
         except Exception as e:
