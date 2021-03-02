@@ -2,7 +2,7 @@ import math
 import requests
 from typing import Tuple, List
 
-AUTH_KEY = 'API KEY HERE'
+AUTH_KEY = 'GOOGLE API KEY'
 PI = math.pi
 LatLng = Tuple[float, float]
 Polygon = List[LatLng]
