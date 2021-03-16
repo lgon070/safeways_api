@@ -7,6 +7,8 @@ app = Flask(__name__)
 total_accidents = PersistentList()
 total_accidents.update()
 print(f'Accidents in Dataset: {total_accidents.size()}')
+
+
 # total_accidents.test_update()
 
 
@@ -25,9 +27,13 @@ def safepath():
         tolerance = int(tolerance_param) if tolerance_param is not None else 0
 
         if use_edge:
+            if method is None or not (method == 'walking' or method == 'bicycling' or method == 'driving'):
+                method = 'walking'
             return best_path_edge(origin, destination, method, total_accidents.get_list(),
                                   tolerance if 5 <= tolerance <= 150 else 20)
         else:
+            if method is None or not (method == 'walking' or method == 'bicycling' or method == 'driving'):
+                method = 'walking'
             return best_path_contains(origin, destination, method, total_accidents.get_list())
     except Exception as e:
         print(e)
@@ -39,7 +45,7 @@ def safepath():
 @app.route('/refresh', methods=['GET'])
 def get():
     key = request.args.get('key')
-    if key == 'CUSTOM KEY HERE':
+    if key == 'CUSTOM API KEY':
         total_accidents.update()
         return {'refreshed': True, 'len': total_accidents.size()}
     else:

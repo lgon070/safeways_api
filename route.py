@@ -15,12 +15,16 @@ def best_path_contains(origin: LatLng, destination: LatLng, method: str, acciden
             accidents_in_route = []
             # Extracting necessary details of route object
             encoded_polyline = route['overview_polyline']['points']  # encoded polyline of route
-            distance = route["legs"][0]["distance"]["value"]  # distance is calculated in meters
-            steps = route['legs'][0]['steps']  # all steps exineeded to reach destination
+            distance_value = route["legs"][0]["distance"]["value"]  # distance is calculated in meters
+            distance_text = route["legs"][0]["distance"]["text"]  # distance text shown in miles
+            duration_value = route["legs"][0]["duration"]["value"]  # duration of trip calculated in seconds
+            duration_text = route["legs"][0]["duration"]["text"]  # duration of trip converted to HH:mm:ss format
+            steps = route['legs'][0]['steps']  # all steps needed to reach destination
             warnings = route['warnings']
             decoded_poly = decode(encoded_polyline)
             mid_point = decoded_poly[int(len(decoded_poly) / 2)]
-            radius = distance * (3 / 2)  # radius is the radius of the circle that encompasses the polyline in meters
+            radius = distance_value * (
+                    3 / 2)  # radius is the radius of the circle that encompasses the polyline in meters
 
             near_accidents = get_accidents(mid_point[1], mid_point[0], radius, accidents)
 
@@ -31,7 +35,9 @@ def best_path_contains(origin: LatLng, destination: LatLng, method: str, acciden
                     accidents_in_route.append(
                         {'accident_id': accident['accident_id'], 'accident_weight': accident['accident_weight']})
 
-            weighted_route = {'route': decoded_poly, 'points': encoded_polyline, 'steps': steps, 'warnings': warnings,
+            weighted_route = {'distance': {'value': distance_value, 'text': distance_text},
+                              'duration': {'value': duration_value, 'text': duration_text}, 'route': decoded_poly,
+                              'points': encoded_polyline, 'steps': steps, 'warnings': warnings,
                               'weight': weight, 'accidents_in_route': accidents_in_route}
             if weight == 0:
                 if len(accidents_in_route) == 0:
@@ -48,7 +54,7 @@ def best_path_contains(origin: LatLng, destination: LatLng, method: str, acciden
                     weighted_routes[j], weighted_routes[j + 1] = weighted_routes[j + 1], weighted_routes[j]
 
         return {'status': fd_response['status'], 'weighted_routes': weighted_routes, 'within_la_bounds': within_bounds,
-                'algorithm': 'contains_location'}
+                'algorithm': 'contains_location', 'travel_method': method}
     else:
         print(fd_response['log_error_google'])
         return {'status': fd_response['status'], 'error_message': fd_response['user_error_msg'], 'weighted_routes': []}
@@ -64,12 +70,16 @@ def best_path_edge(origin: LatLng, destination: LatLng, method: str, accidents: 
             accidents_in_route = []
             # Extracting necessary details of route object
             encoded_polyline = route['overview_polyline']['points']  # encoded polyline of route
-            distance = route["legs"][0]["distance"]["value"]  # distance is calculated in meters
+            distance_value = route["legs"][0]["distance"]["value"]  # distance is calculated in meters
+            distance_text = route["legs"][0]["distance"]["text"]  # distance text shown in miles
+            duration_value = route["legs"][0]["duration"]["value"]  # duration of trip calculated in seconds
+            duration_text = route["legs"][0]["duration"]["text"]  # duration of trip converted to HH:mm:ss format
             steps = route['legs'][0]['steps']  # all steps needed to reach destination
             warnings = route['warnings']
             decoded_poly = decode(encoded_polyline)
             mid_point = decoded_poly[int(len(decoded_poly) / 2)]
-            radius = distance * (3 / 2)  # radius is the radius of the circle that encompasses the polyline in meters
+            radius = distance_value * (
+                        3 / 2)  # radius is the radius of the circle that encompasses the polyline in meters
 
             near_accidents = get_accidents(mid_point[1], mid_point[0], radius, accidents)
 
@@ -80,7 +90,9 @@ def best_path_edge(origin: LatLng, destination: LatLng, method: str, accidents: 
                     accidents_in_route.append(
                         {'accident_id': accident['accident_id'], 'accident_weight': accident['accident_weight']})
 
-            weighted_route = {'route': decoded_poly, 'points': encoded_polyline, 'steps': steps, 'warnings': warnings,
+            weighted_route = {'distance': {'value': distance_value, 'text': distance_text},
+                              'duration': {'value': duration_value, 'text': duration_text}, 'route': decoded_poly,
+                              'points': encoded_polyline, 'steps': steps, 'warnings': warnings,
                               'weight': weight, 'accidents_in_route': accidents_in_route}
             if weight == 0:
                 if len(accidents_in_route) == 0:
@@ -98,7 +110,7 @@ def best_path_edge(origin: LatLng, destination: LatLng, method: str, accidents: 
 
         return {'status': fd_response['status'], 'weighted_routes': weighted_routes, 'within_la_bounds': within_bounds,
                 'algorithm': 'location_edge',
-                'tolerance': tolerance}
+                'tolerance': tolerance, 'travel_method': method}
     else:
         print(fd_response['log_error_google'])
         return {'status': fd_response['status'], 'error_message': fd_response['user_error_msg'], 'weighted_routes': []}

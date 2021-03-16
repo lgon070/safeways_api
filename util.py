@@ -208,6 +208,7 @@ def find_directions(origin: LatLng, destination: LatLng, method: str) -> dict:
         "key": AUTH_KEY
     }
 
+    # print(f'https://maps.googleapis.com/maps/api/directions/json?origin={origin[0]},{origin[1]}&destination={destination[0]},{destination[1]}&mode={method}&alternative=true&key={AUTH_KEY}')
     response = requests.get(
         "https://maps.googleapis.com/maps/api/directions/json?", params=parameters)
     json_data = response.json()
