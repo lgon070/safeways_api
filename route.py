@@ -1,4 +1,4 @@
-from util import find_directions, decode, get_accidents, within_bounds_center
+from util import find_directions, decode, get_accidents, within_city_bounds
 from geo import contains_location, is_location_on_edge
 from typing import Tuple, List
 
@@ -6,7 +6,7 @@ LatLng = Tuple[float, float]
 
 
 def best_path_contains(origin: LatLng, destination: LatLng, method: str, accidents: List[dict]) -> dict:
-    within_bounds = within_bounds_center(origin, destination)
+    within_bounds = within_city_bounds(origin, destination)
     weighted_routes = []
     fd_response = find_directions(origin, destination, method)
     if fd_response['status'] == 'OK':
@@ -61,7 +61,7 @@ def best_path_contains(origin: LatLng, destination: LatLng, method: str, acciden
 
 
 def best_path_edge(origin: LatLng, destination: LatLng, method: str, accidents: List[dict], tolerance) -> dict:
-    within_bounds = within_bounds_center(origin, destination)
+    within_bounds = within_city_bounds(origin, destination)
     weighted_routes = []
     fd_response = find_directions(origin, destination, method)
     if fd_response['status'] == 'OK':
