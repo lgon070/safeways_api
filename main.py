@@ -49,7 +49,7 @@ def get():
 
         if refresh_type_param is not None:
             refresh_type = int(refresh_type_param)
-            if not 0 >= refresh_type >= 2:
+            if not 0 <= refresh_type <= 2:
                 refresh_type = 0
 
         if key == 'CUSTOM API KEY':
