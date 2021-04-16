@@ -267,6 +267,10 @@ class PersistentBuckets:
             print(f'Other error occurred: {e}\nPrevented Buckets refresh')
 
     def refresh_bucket_accidents(self):
+        for key in self.buckets:
+            bucket_info = self.buckets[key]
+            bucket_info['accidents'].clear()
+
         for accident in self.list:
             no_bucket = True
             for key in self.buckets:
@@ -275,6 +279,7 @@ class PersistentBuckets:
                     if inside_polygon((accident['lat'], accident['lng']), bucket_info['bucket_border']):
                         bucket_info['accidents'].append(accident)
                         no_bucket = False
+                        break
             if no_bucket:
                 self.buckets['b0']['accidents'].append(accident)
 
@@ -303,9 +308,6 @@ class PersistentBuckets:
 
     def replace(self, new_list):
         self.list = new_list
-
-    def clear(self):
-        self.list.clear()
 
     def size_list(self):
         return len(self.list)
