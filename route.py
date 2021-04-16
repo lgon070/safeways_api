@@ -5,7 +5,7 @@ from typing import Tuple, List
 LatLng = Tuple[float, float]
 
 
-def best_path_contains(origin: LatLng, destination: LatLng, method: str, accidents: List[dict]) -> dict:
+def best_path_contains(origin: LatLng, destination: LatLng, method: str, buckets: dict) -> dict:
     within_bounds = within_city_bounds(origin, destination)
     weighted_routes = []
     fd_response = find_directions(origin, destination, method)
@@ -26,11 +26,10 @@ def best_path_contains(origin: LatLng, destination: LatLng, method: str, acciden
             radius = distance_value * (
                     3 / 2)  # radius is the radius of the circle that encompasses the polyline in meters
 
-            near_accidents = get_accidents(mid_point[1], mid_point[0], radius, accidents)
+            near_accidents = get_accidents(mid_point[1], mid_point[0], radius, buckets, decoded_poly)
 
-            polyline = decoded_poly
             for accident in near_accidents:
-                if contains_location(accident, polyline, True):
+                if contains_location(accident, decoded_poly, True):
                     weight += accident['accident_weight']
                     accidents_in_route.append(
                         {'accident_id': accident['accident_id'], 'accident_weight': accident['accident_weight']})
@@ -60,7 +59,7 @@ def best_path_contains(origin: LatLng, destination: LatLng, method: str, acciden
         return {'status': fd_response['status'], 'error_message': fd_response['user_error_msg'], 'weighted_routes': []}
 
 
-def best_path_edge(origin: LatLng, destination: LatLng, method: str, accidents: List[dict], tolerance) -> dict:
+def best_path_edge(origin: LatLng, destination: LatLng, method: str, buckets: dict, tolerance) -> dict:
     within_bounds = within_city_bounds(origin, destination)
     weighted_routes = []
     fd_response = find_directions(origin, destination, method)
@@ -79,13 +78,12 @@ def best_path_edge(origin: LatLng, destination: LatLng, method: str, accidents: 
             decoded_poly = decode(encoded_polyline)
             mid_point = decoded_poly[int(len(decoded_poly) / 2)]
             radius = distance_value * (
-                        3 / 2)  # radius is the radius of the circle that encompasses the polyline in meters
+                    3 / 2)  # radius is the radius of the circle that encompasses the polyline in meters
 
-            near_accidents = get_accidents(mid_point[1], mid_point[0], radius, accidents)
+            near_accidents = get_accidents(mid_point[1], mid_point[0], radius, buckets, decoded_poly)
 
-            polyline = decoded_poly
             for accident in near_accidents:
-                if is_location_on_edge(accident, polyline, True, tolerance):
+                if is_location_on_edge(accident, decoded_poly, True, tolerance):
                     weight += accident['accident_weight']
                     accidents_in_route.append(
                         {'accident_id': accident['accident_id'], 'accident_weight': accident['accident_weight']})

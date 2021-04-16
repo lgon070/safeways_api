@@ -1,14 +1,20 @@
+import json
+
 import requests
 from requests.exceptions import HTTPError
 
+from util import inside_polygon
 
-class PersistentList:
+
+class PersistentBuckets:
     def __init__(self):
         self.list = []
+        self.buckets = {}
 
-    def update(self):
+    def refresh_accidents(self):
         try:
-            response = requests.get('https://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/rsg20132018_gdb/FeatureServer/0/query?where=1%3D1&outFields=int_id,collision_severity,number_killed,hit_and_run,pedestrian_accident,motorcycle_accident,truck_accident,alcohol_involved,count_severe_inj,count_visible_inj,count_complaint_pain,count_ped_killed,count_ped_injured,count_bicyclist_killed,count_bicyclist_injured,count_mc_killed,latitude,longitude,point_x,point_y,count_mc_injured,bicycle_accident,number_injured&returnGeometry=false&outSR=4326&f=json')
+            response = requests.get(
+                'https://services1.arcgis.com/tp9wqSVX1AitKgjd/arcgis/rest/services/rsg20132018_gdb/FeatureServer/0/query?where=1%3D1&outFields=int_id,collision_severity,number_killed,hit_and_run,pedestrian_accident,motorcycle_accident,truck_accident,alcohol_involved,count_severe_inj,count_visible_inj,count_complaint_pain,count_ped_killed,count_ped_injured,count_bicyclist_killed,count_bicyclist_injured,count_mc_killed,latitude,longitude,point_x,point_y,count_mc_injured,bicycle_accident,number_injured&returnGeometry=false&outSR=4326&f=json')
             # response = requests.get('https://opendata.arcgis.com/datasets/66d96f15d4e14e039caa6134e6eab8e5_0.geojson')
             response.raise_for_status()
             json_data = response.json()
@@ -233,14 +239,58 @@ class PersistentList:
                         'lng': longitude,
                         'accident_weight': accident_weight
                     })
-            print(f'Success! List refreshed with new dataset entries: {self.size()}')
+            print(f'Success! List refreshed with new dataset entries: {self.size_list()}')
         except HTTPError as http_err:
             print(f'HTTP error occurred: {http_err}\nPrevented List refresh')
         except Exception as e:
             print(f'Other error occurred: {e}\nPrevented List refresh')
 
-    def test_update(self):
-        return []
+    def refresh_buckets(self):
+        try:
+            response = requests.get(
+                'https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/LA_Times_Neighborhoods/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json')
+            response.raise_for_status()
+            json_data = response.json()
+            features = json_data['features']
+            self.buckets['b0'] = {"name": "no_bucket", "bucket_border": [], "accidents": []}
+            for feature in features:
+                bucket_border = []
+                rings = feature['geometry']['rings'][0]
+                for ring in rings:
+                    bucket_border.append((ring[1], ring[0]))
+                self.buckets[f'b{feature["attributes"]["OBJECTID"]}'] = {'name': f'{feature["attributes"]["name"]}',
+                                                                         'bucket_border': bucket_border,
+                                                                         'accidents': []}
+        except HTTPError as http_err:
+            print(f'HTTP error occurred: {http_err}\n Prevented Buckets refresh')
+        except Exception as e:
+            print(f'Other error occurred: {e}\nPrevented Buckets refresh')
+
+    def refresh_bucket_accidents(self):
+        for accident in self.list:
+            no_bucket = True
+            for key in self.buckets:
+                if key != 'b0':
+                    bucket_info = self.buckets[key]
+                    if inside_polygon((accident['lat'], accident['lng']), bucket_info['bucket_border']):
+                        bucket_info['accidents'].append(accident)
+                        no_bucket = False
+            if no_bucket:
+                self.buckets['b0']['accidents'].append(accident)
+
+    def refresh_all(self):
+        self.refresh_accidents()
+        self.refresh_buckets()
+        self.refresh_bucket_accidents()
+
+    def write2json(self):
+        with open("buckets.json", "w") as outfile:
+            json.dump(self.buckets, outfile)
+
+    def write2txt(self):
+        file = open('buckets.txt', 'w')
+        for key in self.buckets:
+            file.write(f'{key} -> {self.buckets[key]}\n')
 
     def append(self, to_append):
         self.list.append(to_append)
@@ -248,11 +298,17 @@ class PersistentList:
     def get_list(self):
         return self.list
 
+    def get_buckets(self):
+        return self.buckets
+
     def replace(self, new_list):
         self.list = new_list
 
     def clear(self):
         self.list.clear()
 
-    def size(self):
+    def size_list(self):
         return len(self.list)
+
+    def size_buckets(self):
+        return len(self.buckets)

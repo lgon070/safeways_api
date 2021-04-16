@@ -254,11 +254,24 @@ def inside_polygon(point, polygon):
     return inside
 
 
-def get_accidents(lat: float, lng: float, radius: float, accidents: List[dict]) -> List[dict]:
+def get_accidents(lat: float, lng: float, radius: float, buckets: dict, decoded_polyline: List) -> List[dict]:
     near_accidents = []
-    for accident in accidents:
-        if find_distance((lat, lng), (accident['lat'], accident['lng'])) <= radius:
-            near_accidents.append(accident)
+    tagged_accidents = []
+    tagged_buckets_keys = []
+    tagged_accidents.extend(buckets['b0']['accidents'])
+    for point in decoded_polyline:
+        for key in buckets:
+            if key not in tagged_buckets_keys and key != 'b0':
+                bucket = buckets[key]
+                if inside_polygon((point[1], point[0]), bucket['bucket_border']):
+                    tagged_buckets_keys.append(key)
+                    tagged_accidents.extend(bucket['accidents'])
+                    break
+
+    for tagged_accident in tagged_accidents:
+        if find_distance((lat, lng), (tagged_accident['lat'], tagged_accident['lng'])) <= radius:
+            near_accidents.append(tagged_accident)
+
     return near_accidents
 
 

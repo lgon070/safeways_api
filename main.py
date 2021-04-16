@@ -1,15 +1,13 @@
 from flask import request, render_template, Flask, Response
-from persistant_list import PersistentList
+from persistant_buckets import PersistentBuckets
 from route import best_path_contains, best_path_edge
 
 app = Flask(__name__)
 
-total_accidents = PersistentList()
-total_accidents.update()
-print(f'Accidents in Dataset: {total_accidents.size()}')
+persistent_buckets = PersistentBuckets()
+persistent_buckets.refresh_all()
 
-
-# total_accidents.test_update()
+print(f'Accidents in Dataset: {persistent_buckets.size_list()}')
 
 
 @app.route('/safepath', methods=['GET'])
@@ -29,12 +27,12 @@ def safepath():
         if use_edge:
             if method is None or not (method == 'walking' or method == 'bicycling' or method == 'driving'):
                 method = 'walking'
-            return best_path_edge(origin, destination, method, total_accidents.get_list(),
+            return best_path_edge(origin, destination, method, persistent_buckets.get_buckets(),
                                   tolerance if 5 <= tolerance <= 150 else 20)
         else:
             if method is None or not (method == 'walking' or method == 'bicycling' or method == 'driving'):
                 method = 'walking'
-            return best_path_contains(origin, destination, method, total_accidents.get_list())
+            return best_path_contains(origin, destination, method, persistent_buckets.get_buckets())
     except Exception as e:
         print(e)
         return {'error_message': 'invalid parameters',
@@ -44,12 +42,34 @@ def safepath():
 
 @app.route('/refresh', methods=['GET'])
 def get():
+    refresh_type_param = request.args.get('type')
     key = request.args.get('key')
-    if key == 'CUSTOM API KEY':
-        total_accidents.update()
-        return {'refreshed': True, 'len': total_accidents.size()}
-    else:
-        return {'refreshed': False, 'error': 'Invalid Key'}
+    try:
+        refresh_type = 0
+
+        if refresh_type_param is not None:
+            refresh_type = int(refresh_type_param)
+
+        if key == 'CUSTOM API KEY':
+            if refresh_type == 0:
+                persistent_buckets.refresh_all()
+                return {'refreshed': True, 'buckets_len': persistent_buckets.size_buckets(),
+                        'list_len': persistent_buckets.size_list(), 'refresh_type': 'Full Server Refresh'}
+            elif refresh_type == 1:
+                persistent_buckets.refresh_accidents()
+                persistent_buckets.refresh_bucket_accidents()
+                return {'refreshed': True,
+                        'list_len': persistent_buckets.size_list(), 'refresh_type': 'Accident List Refresh'}
+            elif refresh_type == 2:
+                persistent_buckets.refresh_buckets()
+                persistent_buckets.refresh_bucket_accidents()
+                return {'refreshed': True,
+                        'buckets_len': persistent_buckets.size_buckets(), 'refresh_type': 'Buckets Dictionary Refresh'}
+        else:
+            return {'refreshed': False, 'error': 'Invalid Key'}
+    except Exception as e:
+        print(e)
+        return {'error_message': 'invalid/incorrect parameters', 'parameters': {'type': refresh_type_param}}
 
 
 @app.route('/', methods=['GET'])
