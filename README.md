@@ -7,7 +7,7 @@ Beta API that finds the safest path for pedestrians and bicyclists, made for Cit
 
 You can check out the API code [here](https://github.com/lgon070/safeways_api)
 
-You can check out SafeWays' code [here](https://github.com/ehern251/safe_ways)
+You can check out SafeWays' code [here](https://github.com/lgon070/safeways_app)
 
 | Team | 
 | ------ | 
